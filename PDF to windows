@@ -1,0 +1,24 @@
+import win32com.client
+
+def get_outlook_folder_entry_ids():
+    outlook = win32com.client.Dispatch("Outlook.Application")
+    namespace = outlook.GetNamespace("MAPI")
+    root_folder = namespace.Folders.Item(1)  # Change the index if you have multiple accounts
+
+    folder_entry_ids = []
+
+    def traverse_folder(folder):
+        folder_entry_ids.append(folder.EntryID)
+
+        if folder.Folders.Count > 0:
+            for subfolder in folder.Folders:
+                traverse_folder(subfolder)
+
+    traverse_folder(root_folder)
+
+    return folder_entry_ids
+
+# Usage example
+outlook_folder_entry_ids = get_outlook_folder_entry_ids()
+for entry_id in outlook_folder_entry_ids:
+    print(entry_id)
