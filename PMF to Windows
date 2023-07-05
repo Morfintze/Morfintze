@@ -1,0 +1,57 @@
+import os
+import win32com.client
+
+def find_folder(folder, folder_path):
+    # Check if the current folder path matches the desired path
+    if folder.name == folder_path:
+        return folder
+
+    # Iterate over subfolders recursively
+    for subfolder in folder.Folders:
+        found_folder = find_folder(subfolder, folder_path)
+        if found_folder is not None:
+            return found_folder
+
+    return None
+
+def transfer_attachments(outlook_folder, explorer_folder):
+    # Create Outlook application object
+    outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+
+    # Get the root folder
+    root_folder = outlook.Folders.Item(1)
+
+    # Find the specified Outlook folder based on its path
+    folder = find_folder(root_folder, outlook_folder)
+
+    if folder is not None:
+        # Get all the items in the folder
+        items = folder.Items
+
+        # Iterate over the items
+        for item in items:
+            # Check if the item is a mail item
+            if item.Class == 43:
+                # Iterate over the attachments
+                for attachment in item.Attachments:
+                    # Get the attachment file name
+                    attachment_filename = attachment.FileName
+
+                    # Get the attachment file path
+                    attachment_filepath = os.path.join(explorer_folder, attachment_filename)
+
+                    # Save the attachment to the specified folder
+                    attachment.SaveAsFile(attachment_filepath)
+
+                    print(f"Attachment saved: {attachment_filename}")
+
+        print("Transfer completed.")
+    else:
+        print("Fuck I cannot find the folder.")
+
+# Specify the Outlook folder and Explorer folder paths
+outlook_folder = r"PMF"
+explorer_folder = r"C:\Users\71002265\OneDrive - Thomassen Energy B.V\Documents\Algemeen Mart\Outlook transfer"
+
+# Call the function to transfer the attachments
+transfer_attachments(outlook_folder, explorer_folder)
