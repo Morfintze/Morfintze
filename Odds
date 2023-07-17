@@ -1,0 +1,20 @@
+def calculate_wager(odds, target_winnings):
+    return target_winnings / odds
+
+def main():
+    home_odds = float(input("Enter the odds for the home team: "))
+    draw_odds = float(input("Enter the odds for the draw: "))
+    away_odds = float(input("Enter the odds for the away team: "))
+
+    target_winnings = float(input("Enter the target winnings amount: "))
+
+    home_wager = calculate_wager(home_odds, target_winnings)
+    draw_wager = calculate_wager(draw_odds, target_winnings)
+    away_wager = calculate_wager(away_odds, target_winnings)
+
+    print(f"You should wager ${home_wager:.2f} on the home team.")
+    print(f"You should wager ${draw_wager:.2f} on the draw.")
+    print(f"You should wager ${away_wager:.2f} on the away team.")
+
+if __name__ == '__main__':
+    main()
